@@ -75,3 +75,16 @@ ul#messages li.error {
     font-style: italic;
 }
 
+table {
+    border-collapse: collapse;
+    padding: 15px;
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+td, th{
+    padding: 5px;
+    background: #eee;
+    border: 3px solid white;
+}
+

@@ -5,12 +5,12 @@
     <title th:text="Posts">View Post</title>
 </head>
 
-<header th:replace="layout :: site-header" />
+<header th:replace="layout :: site-header"/>
 
 <body>
 
-<table>
-    <tr class="titlesFields">
+<table class="allPosts">
+    <tr>
         <th>ID</th>
         <th>Title</th>
         <th>Content</th>
@@ -19,14 +19,22 @@
         <th>Action</th>
     </tr>
     <tr th:each="p : ${allPosts}">
-        <td th:text="${p.id}">1</td>
-        <td th:text>Post name</td>
-        <td></td>
-        <td></td>
+        <td th:text="${p.id}">ID</td>
+        <td th:text="${p.title}">Post name</td>
+        <td th:text="${p.body}">Post Content</td>
+        <td th:text="${p.author.fullName!= null ? p.author.fullName : p.author.username}">Author name</td>
         <td th:text="${#dates.format(p.date, 'dd-MMM-yyyy')}">22-May-2016</td>
+        <td>
+            <form th:method="post" th:action="@{/posts/edit}">
+                <button type="submit" name="id" th:value="${p.id}">EDIT</button>
+            </form>
+            <form th:method="post" th:action="@{/posts/delete}">
+                <button type="submit" name="id" th:value="${p.id}">DELETE</button>
+            </form>
+        </td>
     </tr>
 </table>
 
-<footer th:replace="layout :: site-footer" />
+<footer th:replace="layout :: site-footer"/>
 </body>
 </html>

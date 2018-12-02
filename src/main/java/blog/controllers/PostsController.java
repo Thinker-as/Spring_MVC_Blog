@@ -22,7 +22,7 @@ public class PostsController {
     private NotificationService notifyService;
 
     @RequestMapping("/view/{id}")
-    public String view(@PathVariable("id") Long id, Model model) {
+    String view(@PathVariable("id") Long id, Model model) {
         Post post = postService.findById(id);
         if (post == null) {
             notifyService.addErrorMessage("Cannot find post #" + id);
@@ -33,9 +33,9 @@ public class PostsController {
     }
 
     @RequestMapping("/index")
-    public String allPosts(Model model){
+    String allPosts(Model model){
         List<Post> listWithAllPosts = postService.findAll();
         model.addAttribute("allPosts", listWithAllPosts);
-        return "index";
+        return "posts/index";
     }
 }
