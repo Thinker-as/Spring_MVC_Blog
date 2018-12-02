@@ -10,7 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
+@RequestMapping("/posts")
 public class PostsController {
     @Autowired
     private PostService postService;
@@ -18,8 +21,8 @@ public class PostsController {
     @Autowired
     private NotificationService notifyService;
 
-    @RequestMapping("/posts/view/{id}")
-    public String view(@PathVariable("id") Long id, Model model) {
+    @RequestMapping("/view/{id}")
+    String view(@PathVariable("id") Long id, Model model) {
         Post post = postService.findById(id);
         if (post == null) {
             notifyService.addErrorMessage("Cannot find post #" + id);
@@ -27,5 +30,12 @@ public class PostsController {
         }
         model.addAttribute("post", post);
         return "posts/view";
+    }
+
+    @RequestMapping("/index")
+    String allPosts(Model model){
+        List<Post> listWithAllPosts = postService.findAll();
+        model.addAttribute("allPosts", listWithAllPosts);
+        return "posts/index";
     }
 }
