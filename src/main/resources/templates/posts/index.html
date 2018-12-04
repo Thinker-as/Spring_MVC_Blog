@@ -2,12 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="layout :: site-head">
-    <title th:text="Posts">View Post</title>
+    <title>Posts</title>
 </head>
-
-<header th:replace="layout :: site-header"/>
-
 <body>
+
+<header th:replace="layout :: site-header" />
+
+<h1>Posts</h1>
 
 <table class="allPosts">
     <tr>
@@ -18,6 +19,7 @@
         <th>Author</th>
         <th>Action</th>
     </tr>
+
     <tr th:each="p : ${allPosts}">
         <td th:text="${p.id}">ID</td>
         <td th:text="${p.title}">Post name</td>
@@ -25,11 +27,11 @@
         <td th:text="${p.author.fullName!= null ? p.author.fullName : p.author.username}">Author name</td>
         <td th:text="${#dates.format(p.date, 'dd-MMM-yyyy')}">22-May-2016</td>
         <td>
-            <form th:method="post" th:action="@{/posts/edit}">
-                <button type="submit" name="id" th:value="${p.id}">EDIT</button>
+            <form th:action="@{/posts/edit/{id}/(id=${p.id})}">
+                <button type="submit">EDIT</button>
             </form>
-            <form th:method="post" th:action="@{/posts/delete}">
-                <button type="submit" name="id" th:value="${p.id}">DELETE</button>
+            <form th:action="@{/posts/delete/{id}/(id=${p.id})}">
+                <button type="submit">DELETE</button>
             </form>
         </td>
     </tr>

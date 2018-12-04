@@ -2,14 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="site-head">
     <meta charset="UTF-8"/>
+    <meta th:include="this :: head" th:remove="tag"/>
     <link rel="stylesheet" href="../public/css/styles.css" th:href="@{/css/styles.css}"/>
     <link rel="icon" href="../public/img/favicon.ico" th:href="@{/img/favicon.ico}"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+            th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js}"></script>
     <script src="../public/js/blog-scripts.js" th:src="@{/js/blog-scripts.js}"></script>
-    <meta th:include="this :: head" th:remove="tag"/>
 </head>
 <body>
-<header th:fragment="site-header">
+
+<header th:fragment="site-header" th:remove="tag">
     <header>
         <a href="index.html" th:href="@{/}"><img src="../public/img/site-logo.png" th:src="@{/img/site-logo.png}"/></a>
         <a href="index.html" th:href="@{/}">Home</a>
@@ -26,13 +28,34 @@
     </header>
     <ul id="messages"
         th:with="notifyMessages=${session[T(blog.services.NotificationServiceImpl).NOTIFY_MSG_SESSION_KEY]}">
-        <li th:each="msg:${notifyMessages}" th:text="${msg.text}" th:class="${#strings.toLowerCase(msg.type)}"></li>
-        <span th:if="${notifyMessages}" th:remove="all"
+
+        <li th:each="msg:${notifyMessages}"
+            th:text="${msg.text}"
+            th:class="${#strings.toLowerCase(msg.type)}"></li>
+
+        <span th:if="${notifyMessages}"
+              th:remove="all"
               th:text="${session.remove(T(blog.services.NotificationServiceImpl).NOTIFY_MSG_SESSION_KEY)}"></span>
     </ul>
 </header>
 <h1>Welcome</h1>
 <p>Welcome to the Spring MVC Blog.</p>
+
+<form action="#" th:fragment="edit-form">
+    <div><label for="title">Title</label></div>
+    <input id="title" type="text" name="title" th:value="*{title}"/>
+    <span class="formError" th:if="${#fields.hasErrors('title')}"
+          th:errors="*{title}">Incorrect title</span>
+
+    <div><label for="content">Content</label></div>
+    <textarea id="content" rows="12" th:field="*{body}" th:text="*{body}">Content post</textarea>
+    <span class="formError" th:if="${#fields.hasErrors('body')}"
+          th:errors="*{body}">Incorrect content</span>
+
+    <div><input type="submit" value="Create"/>
+    <a href="posts/posts" th:href="@{/posts/index}">Отмена</a> </div>
+</form>
+
 <footer th:fragment="site-footer">
     &copy; Spring MVC Blog System, 2016
 </footer>

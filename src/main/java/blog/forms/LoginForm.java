@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class LoginForm {
+
     @Size(min=2, max=30, message = "Username size should be in the range [2...30]")
     private String username;
 
