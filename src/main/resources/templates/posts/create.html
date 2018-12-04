@@ -2,13 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="layout :: site-head">
-    <title>Edit Post</title>
+    <title>Create New Post</title>
 </head>
 <body>
 
 <header th:replace="layout :: site-header"/>
 
-<h1>Edit Post</h1>
+<h1>Create Post</h1>
 
 <!--/*@thymesVar id="editForm" type="blog.forms.EditForm"*/-->
 <form method="post" th:object="${editForm}" th:include="layout :: edit-form">
