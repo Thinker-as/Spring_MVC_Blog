@@ -10,8 +10,8 @@
 
 <h1>Edit Post</h1>
 
-<!--/*@thymesVar id="editForm" type="blog.forms.EditForm"*/-->
-<form method="post" th:object="${editForm}" th:include="layout :: edit-form">
+
+<form method="post" th:object="${post}" th:include="layout :: edit-form">
 </form>
 
 <footer th:replace="layout :: site-footer"/>

@@ -3,6 +3,8 @@ package blog.models;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 
@@ -17,6 +19,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Size(min = 1, max = 300, message = "Title size should be in the range [1...300]")
     @Column(nullable = false, length = 300)
     private String title;
 

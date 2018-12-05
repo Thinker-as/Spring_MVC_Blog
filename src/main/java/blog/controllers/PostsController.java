@@ -1,7 +1,6 @@
 package blog.controllers;
 
 
-import blog.forms.EditForm;
 import blog.models.Post;
 import blog.services.NotificationService;
 import blog.services.PostService;
@@ -33,7 +32,7 @@ public class PostsController {
     //******************************************************************************************************************
     // INDEX ***********************************************************************************************************
 
-    @RequestMapping("/index")
+    @RequestMapping({"/index", "/"})
     public String allPosts(Model model){
         List<Post> listWithAllPosts = postService.findAll();
         model.addAttribute("allPosts", listWithAllPosts);
@@ -58,12 +57,12 @@ public class PostsController {
     // CREATE ----------------------------------------------------------------------------------------------------------
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String createForm(EditForm editForm){
+    public String createForm(Post post){
         return "posts/create";
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public String create(@Valid EditForm editForm, BindingResult bindingResult){
+    public String create(@Valid Post post, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             notifyService.addErrorMessage("Please fill the form correctly!");
@@ -73,12 +72,17 @@ public class PostsController {
         //TODO
 
         Post newPost = new Post();
-        newPost.setTitle(editForm.getTitle());
-        newPost.setBody(editForm.getBody());
+        newPost.setTitle(post.getTitle());
+        newPost.setBody(post.getBody());
         newPost.setAuthor(userService.findById((long) 1));
-        postService.create(newPost);
+        try {
+            postService.create(newPost);
+            notifyService.addInfoMessage("Post created");
+        } catch (Exception e) {
+            notifyService.addErrorMessage(e.getMessage());
+        }
 
-        notifyService.addInfoMessage("Post created");
+
 
         return "redirect:/posts/index";
     }
@@ -87,23 +91,24 @@ public class PostsController {
     // EDIT ------------------------------------------------------------------------------------------------------------
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-    public String editForm(@PathVariable("id") Long id, EditForm editForm){
-        Post post = postService.findById(id);
+    public String editForm(@PathVariable("id") Long id,
+                           Post post){
+        Post tempPost = postService.findById(id);
         if (post == null) {
             notifyService.addErrorMessage("Cannot find post #" + id);
-            return "redirect:/";
+            return "redirect:/posts/index";
         }
-        editForm.setTitle(post.getTitle());
-        editForm.setBody(post.getBody());
+        post.setTitle(tempPost.getTitle());
+        post.setBody(tempPost.getBody());
         return "/posts/edit";
     }
 
-    @RequestMapping(value = "/edit{id}", method = RequestMethod.POST)
-    public String edit(@Valid EditForm editForm,
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
+    public String edit(@Valid Post post,
                     @PathVariable("id") Long id,
                     BindingResult bindingResult){
 
-        Post post = postService.findById(id);
+        Post editedPost = postService.findById(id);
         if(post == null){
             notifyService.addErrorMessage("Cannot find post #" + id);
             return "redirect:/posts/index";
@@ -114,19 +119,30 @@ public class PostsController {
             return "posts/edit";
         }
 
-        post.setTitle(editForm.getTitle());
-        post.setBody(editForm.getBody());
-        postService.edit(post);
+        editedPost.setTitle(post.getTitle());
+        editedPost.setBody(post.getBody());
+        try {
+            postService.edit(editedPost);
+            notifyService.addInfoMessage("Post edited");
+        }catch (Exception ex){
+            notifyService.addErrorMessage(ex.getMessage());
+        }
 
-        return "posts/index";
+        return "redirect:/posts/index";
     }
 
     //------------------------------------------------------------------------------------------------------------------
     // DELETE ----------------------------------------------------------------------------------------------------------
 
-    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     public String deleteForm(@PathVariable("id") Long id){
 
-        return "posts/delete";
+        try {
+            postService.deleteById(id);
+            notifyService.addInfoMessage("Post deleted");
+        } catch (Exception e) {
+            notifyService.addErrorMessage(e.getMessage());
+        }
+        return "redirect:/posts/index";
     }
 }
